@@ -4,14 +4,14 @@
 ![Maven Central](https://img.shields.io/maven-central/v/com.mariocairone.cucumbersome/parent?style=flat-square)  ![GitHub](https://img.shields.io/github/license/mariocairone/cucumbersome) ![GitHub issues](https://img.shields.io/github/issues/mariocairone/cucumbersome) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/mariocairone/cucumbersome?style=social)
 
 Cucumbersome is a small framework created to speed up the testing process using cucumber framework.
-The scope of the framework is to provide is a collection of predefined steps to test system integrations using the following technologies:
+The scope of the framework is to provide a collection of predefined steps to test system integrations using the following technologies:
   -  HTTP
   -  AMQP
   -  SQL        
 
 Here is the list of available modules:
 - [core](core/README.md)
-- [http](rest/README.md)
+- [http](http/README.md)
 - [database](database/README.md)
 - [mock](mock/README.md)
 - [rabbitmq](rabbitmq/README.md)
@@ -38,7 +38,7 @@ Here is the list of available modules:
 
 ```
 
-* Create the test class with the package glue __com.addisonlee.cucumber.steps__   
+* Create the test class with the package glue __com.mariocairone.cucumbersome.steps__   
 
 ```java
 import io.cucumber.junit.Cucumber;
@@ -104,7 +104,7 @@ mvn clean test
 
 To Deploy the framework in your remote maven repository:
 
-* configure the distribution management section in the cucumber-recipes parent pom
+* configure the distribution management section in the parent pom
 
 * run the command:
 
@@ -122,17 +122,17 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/addleeplc/cucumber-recipes/tags).
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/mariocairone/cucumbersome/tags).
 
 ## Authors
 
 * **Mario Cairone** - *Initial work*
 
-See also the list of [contributors](https://github.com/addleeplc/cucumber-recipes/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/mariocairone/cucumbersome/contributors) who participated in this project.
 
 ## License
 
-This project is licensed under the GPLv3 License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
 
 [30bd4b1c]: https://github.com/badlogic/basis-template "Basis Template"

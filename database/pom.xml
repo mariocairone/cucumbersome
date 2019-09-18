@@ -1,0 +1,72 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.mariocairone.cucumbersome</groupId>
+		<artifactId>parent</artifactId>
+		<version>${revision}</version>
+	</parent>
+	<artifactId>database</artifactId>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+
+		<commons-io.version>2.6</commons-io.version>
+		<commons-lang3.version>3.8</commons-lang3.version>
+		<testcontainers.version>1.12.1</testcontainers.version>
+		<postgresql.version>9.4-1202-jdbc4</postgresql.version>
+		<flip-tables.version>1.0.2</flip-tables.version>
+
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>com.mariocairone.cucumbersome</groupId>
+			<artifactId>core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.mariocairone.cucumbersome</groupId>
+			<artifactId>variables</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.jakewharton.fliptables</groupId>
+			<artifactId>fliptables</artifactId>
+			<version>${flip-tables.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>testcontainers</artifactId>
+			<version>${testcontainers.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>jdbc</artifactId>
+			<version>${testcontainers.version}</version>
+		</dependency>
+
+		<!-- Test Dependencies -->
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${testcontainers.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${postgresql.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>aspectj-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+</project>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <Appenders>
+    <File name="file" fileName="target/test.log">
+      <PatternLayout>
+        <Pattern>%d %p %c{1.} [%t] %m %ex%n</Pattern>
+      </PatternLayout>
+    </File>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%-5p %d [%t] %c: %m%n"/>
+        </Console>
+  </Appenders>
+  <Loggers>
+    <Root level="trace">
+<!--       <AppenderRef ref="file" level="DEBUG"/> -->
+      <AppenderRef ref="Console" level="INFO"/>
+    </Root>
+    
+   	<Logger name="com.addisonlee.cucumber" level="DEBUG"/>
+   	<Logger name="org.mockserver.mock" level="WARN"/>
+   	
+    <Logger name="org.testcontainers" level="DEBUG"/>
+    
+  </Loggers>
+</Configuration> 
