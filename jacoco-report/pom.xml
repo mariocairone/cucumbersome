@@ -1,19 +1,19 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.mariocairone.cucumbersome</groupId>
 		<artifactId>parent</artifactId>
-		<version>${revision}</version>
+		<version>1.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>jacoco-report</artifactId>
+	<name>Cucumbersome: Jacoco Report</name>
+	<description>Cucumbersome: Jacoco Report</description>
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-	</properties>			
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>com.mariocairone.cucumbersome</groupId>
@@ -22,31 +22,31 @@
 		<dependency>
 			<groupId>com.mariocairone.cucumbersome</groupId>
 			<artifactId>http</artifactId>
-			<version>${revision}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.mariocairone.cucumbersome</groupId>
 			<artifactId>database</artifactId>
-			<version>${revision}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.mariocairone.cucumbersome</groupId>
 			<artifactId>mock</artifactId>
-			<version>${revision}</version>
-		</dependency>		
+			<version>${project.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>com.mariocairone.cucumbersome</groupId>
 			<artifactId>rabbitmq</artifactId>
-			<version>${revision}</version>
-		</dependency>			
+			<version>${project.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>com.mariocairone.cucumbersome</groupId>
 			<artifactId>template</artifactId>
-		</dependency>			
+		</dependency>
 		<dependency>
 			<groupId>com.mariocairone.cucumbersome</groupId>
 			<artifactId>variables</artifactId>
-		</dependency>		
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

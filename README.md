@@ -1,6 +1,21 @@
 # Cucumbersome
 
-![Maven Central](https://img.shields.io/maven-central/v/com.mariocairone.cucumbersome/parent?style=flat-square)  ![GitHub](https://img.shields.io/github/license/mariocairone/cucumbersome) ![GitHub issues](https://img.shields.io/github/issues/mariocairone/cucumbersome) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/mariocairone/cucumbersome?style=social)
+
+
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/dashboard?id=mariocairone_cucumbersome)
+
+![GitHub Actions](https://github.com/mariocairone/cucumbersome/workflows/Continuous%20Integration/badge.svg)
+
+![GitHub stars](https://img.shields.io/github/stars/mariocairone/cucumbersome?style=social) ![GitHub forks](https://img.shields.io/github/forks/mariocairone/cucumbersome?style=social) ![GitHub issues](https://img.shields.io/github/issues/mariocairone/cucumbersome?style=social ) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/mariocairone/cucumbersome?style=social)
+
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=mariocairone_cucumbersome&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=mariocairone_cucumbersome) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=mariocairone_cucumbersome&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=mariocairone_cucumbersome) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=mariocairone_cucumbersome&metric=security_rating)](https://sonarcloud.io/dashboard?id=mariocairone_cucumbersome)
+
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=mariocairone_cucumbersome&metric=coverage)](https://sonarcloud.io/dashboard?id=mariocairone_cucumbersome) [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=mariocairone_cucumbersome&metric=bugs)](https://sonarcloud.io/dashboard?id=mariocairone_cucumbersome) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=mariocairone_cucumbersome&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=mariocairone_cucumbersome) [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=mariocairone_cucumbersome&metric=code_smells)](https://sonarcloud.io/dashboard?id=mariocairone_cucumbersome) [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=mariocairone_cucumbersome&metric=sqale_index)](https://sonarcloud.io/dashboard?id=mariocairone_cucumbersome)
+
+
+![Maven Central](https://img.shields.io/maven-central/v/com.mariocairone.cucumbersome/parent?style=flat-square)
+
+
 
 Cucumbersome is a small framework created to speed up the testing process using cucumber framework.
 The scope of the framework is to provide a collection of predefined steps to test system integrations using the following technologies:
@@ -30,11 +45,33 @@ Here is the list of available modules:
 ```xml
 <dependency>
   <groupId>com.mariocairone.cucumbersome</groupId>
-  <artifactId>{{module name}}</artifactId>
-  <version>{{version}}</version>
+  <artifactId>[module name]</artifactId>
+  <version>1.0.0.alpha</version>
   <scope>test</scope>
 </dependency>
 
+```
+
+You can also build the `.jar` files yourself, assuming you have Maven and JDK 1.8+ installed:
+```shell
+mvn clean install
+```
+The resulting `.jar` files will be located in the modules `target/` folder.
+
+You can also find `SNAPSHOT` builds of the latest and greatest changes to the master branch in the SonaType snapshots repository.
+
+To add that snapshot repository to your Maven pom.xml use the following snippet:
+```xml
+<repositories>
+    <repository>
+        <id>oss-sonatype</id>
+        <name>oss-sonatype</name>
+        <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+</repositories>
 ```
 
 * Create the test class with the package glue __com.mariocairone.cucumbersome.steps__   
@@ -71,6 +108,9 @@ Example:
 *Please refer to the module documentation for the list of available properties.*
 
 * Write your feature file
+
+  ![Cucumber Plugin](doc/images/cucumber-plugin.gif)
+
 * Run the test
 
 ```shell

@@ -26,7 +26,7 @@ import io.cucumber.junit.CucumberOptions;
     glue = {"com.mariocairone.cucumbersome.steps"},
     features = "classpath:features/db",
     strict = true)
-public class CucumbersomeDatabaseTests {
+public class CucumbersomeDatabaseTest {
 	
 	static final Map<String, Object> variables = Settings.getInstance().getGlobalVariables();
 
@@ -40,7 +40,6 @@ public class CucumbersomeDatabaseTests {
 	  public static void setup() {
 
 		 postgres.start();
-		 
 		 databaseOptions()
 		 	.withDatabaseContainer(postgres);
 

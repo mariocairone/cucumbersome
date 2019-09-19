@@ -3,21 +3,18 @@ package com.mariocairone.cucumbersome.steps.database;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.mariocairone.cucumbersome.config.AbstractModuleConfig;
-import com.mariocairone.cucumbersome.config.ConfigurationException;
 
 public class DatabaseConfig extends AbstractModuleConfig {
 
 	private static DatabaseConfig instance = new DatabaseConfig();
 
-	protected final static String DB_URL = "db.url";
-	protected final static String DB_USERNAME = "db.username";
-	protected final static String DB_PASSWORD = "db.password";
+	protected static final String DB_URL = "database.url";
+	protected static final String DB_USERNAME = "database.username";
+	protected static final String DB_PASSWORD = "database.password";
 
 	private String databaseUrl;
 	private String databaseUsername;
-	private String databasePassword;
-//	private String databaseSchema;
-//	private String databaseCatalog;
+	private String databasePassword;;
 
 	private DatabaseConfig() {
 		super();
@@ -34,19 +31,15 @@ public class DatabaseConfig extends AbstractModuleConfig {
 	}
 
 	@Override
-	protected void loadProperties() throws ConfigurationException {
+	protected void loadProperties() {
 
-		if (settings.isDefined(DB_USERNAME))
-			this.databaseUsername = settings.get(DB_USERNAME, String.class);
-		if (settings.isDefined(DB_PASSWORD))
-			this.databasePassword = settings.get(DB_PASSWORD, String.class);
-		if (settings.isDefined(DB_URL))
-			this.databaseUrl = settings.get(DB_URL, String.class);
+		if (getSettings().isDefined(DB_USERNAME))
+			this.databaseUsername = getSettings().get(DB_USERNAME, String.class);
+		if (getSettings().isDefined(DB_PASSWORD))
+			this.databasePassword = getSettings().get(DB_PASSWORD, String.class);
+		if (getSettings().isDefined(DB_URL))
+			this.databaseUrl = getSettings().get(DB_URL, String.class);
 	}
-
-	// **********************************
-	// SETTERS
-	// *********************************
 
 	public DatabaseConfig withDatabaseUrl(String databaseUrl) {
 		this.databaseUrl = databaseUrl;
@@ -63,20 +56,6 @@ public class DatabaseConfig extends AbstractModuleConfig {
 		return this;
 	}
 
-//	public DatabaseConfig withDatabaseSchema(String databaseSchema) {
-//		this.databaseSchema = databaseSchema;
-//		return this;
-//	}
-//
-//	public DatabaseConfig withDatabaseCatalog(String databaseCatalog) {
-//		this.databaseCatalog = databaseCatalog;
-//		return this;
-//	}
-
-	// **********************************
-	// GETTERS
-	// *********************************
-
 	protected String getDatabaseUrl() {
 		return databaseUrl;
 	}
@@ -88,13 +67,5 @@ public class DatabaseConfig extends AbstractModuleConfig {
 	protected String getDatabasePassword() {
 		return databasePassword;
 	}
-
-//	protected String getDatabaseSchema() {
-//		return databaseSchema;
-//	}
-//
-//	protected String getDatabaseCatalog() {
-//		return databaseCatalog;
-//	}
 
 }

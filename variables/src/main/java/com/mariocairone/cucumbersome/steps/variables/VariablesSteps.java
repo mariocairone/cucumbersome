@@ -15,7 +15,7 @@ import cucumber.api.java.en.Given;
 @SuppressWarnings("deprecation")
 public class VariablesSteps extends BaseStepDefs {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(VariablesSteps.class);
+    private final Logger logger = LoggerFactory.getLogger(VariablesSteps.class);
 
 	public VariablesSteps(TemplateParser parser) {
 		super(parser);
@@ -72,7 +72,7 @@ public class VariablesSteps extends BaseStepDefs {
 	@ParseArgs
 	@Given("^the logger print \"(.*)\"$")
 	public void theLoggerPrint(String data) {
-		LOGGER.info(data);
+		logger.info(data);
 	}
 
 

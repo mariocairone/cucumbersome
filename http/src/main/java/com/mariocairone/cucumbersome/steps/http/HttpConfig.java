@@ -1,7 +1,6 @@
 package com.mariocairone.cucumbersome.steps.http;
 
 import com.mariocairone.cucumbersome.config.AbstractModuleConfig;
-import com.mariocairone.cucumbersome.config.ConfigurationException;
 
 public class HttpConfig extends AbstractModuleConfig {
 
@@ -37,7 +36,6 @@ public class HttpConfig extends AbstractModuleConfig {
 	}
 	public HttpConfig withBaseUri(String baseUrl) {
 		this.baseUrl = baseUrl;
-//		RestAssured.baseURI = baseUrl;
 		return httpOptions();
 	}
 	protected String getBasePath() {
@@ -45,7 +43,6 @@ public class HttpConfig extends AbstractModuleConfig {
 	}
 	public HttpConfig withBasePath(String basePath) {
 		this.basePath = basePath;
-//		RestAssured.basePath = basePath; 
 		return httpOptions();
 	}
 	protected Integer getPort() {
@@ -53,7 +50,6 @@ public class HttpConfig extends AbstractModuleConfig {
 	}
 	public HttpConfig withPort(Integer port) {
 		this.port = port;
-//		RestAssured.port = port;
 		return httpOptions();
 	}
 	protected Boolean getLogRequest() {
@@ -61,7 +57,6 @@ public class HttpConfig extends AbstractModuleConfig {
 	}
 	public HttpConfig withLogRequest(Boolean logRequest) {
 		this.logRequest = logRequest;
-//		RestAssured.filters(new RequestLoggingFilter());
 		return httpOptions();
 	}
 	protected Boolean getLogResponse() {
@@ -69,7 +64,6 @@ public class HttpConfig extends AbstractModuleConfig {
 	}
 	public HttpConfig withLogResponse(Boolean logResponse) {
 		this.logResponse = logResponse;
-//		RestAssured.filters(new ResponseLoggingFilter());
 		return httpOptions();
 	}
 	protected Boolean getRelaxedHttps() {
@@ -77,7 +71,6 @@ public class HttpConfig extends AbstractModuleConfig {
 	}
 	public HttpConfig withRelaxedHttps(Boolean relaxedHttps) {
 		this.relaxedHttps = relaxedHttps;
-//		RestAssured.useRelaxedHTTPSValidation();
 		return httpOptions();
 
 	}
@@ -91,15 +84,15 @@ public class HttpConfig extends AbstractModuleConfig {
 	}
 
 	@Override
-	protected void loadProperties() throws ConfigurationException {
+	protected void loadProperties() {
 		          
-		this.logRequest = settings.getOrDefault(REST_REQUEST_LOG, true, Boolean.class);
-		this.logResponse = settings.getOrDefault(REST_RESPONSE_LOG, true, Boolean.class);
-		this.relaxedHttps = settings.getOrDefault(REST_RELAXED_HTTPS, true, Boolean.class);
-		this.baseUrl = settings.getOrDefault(REST_BASE_URL, "http://localhost",String.class);
-		this.basePath =settings.getOrDefault(REST_BASE_PATH,"/",String.class);
-		this.port =settings.getOrDefault(REST_PORT,8080,Integer.class );
-    	this.noContentPlaceholder = settings.getOrDefault(REST_NO_CONTENT_PLACEHOLDER, "-",String.class);
+		this.logRequest = getSettings().getOrDefault(REST_REQUEST_LOG, true, Boolean.class);
+		this.logResponse = getSettings().getOrDefault(REST_RESPONSE_LOG, true, Boolean.class);
+		this.relaxedHttps = getSettings().getOrDefault(REST_RELAXED_HTTPS, true, Boolean.class);
+		this.baseUrl = getSettings().getOrDefault(REST_BASE_URL, "http://localhost",String.class);
+		this.basePath =getSettings().getOrDefault(REST_BASE_PATH,"/",String.class);
+		this.port =getSettings().getOrDefault(REST_PORT,8080,Integer.class );
+    	this.noContentPlaceholder = getSettings().getOrDefault(REST_NO_CONTENT_PLACEHOLDER, "-",String.class);
 	
 	}
 

@@ -36,5 +36,7 @@ public class MessageWrapper {
 
     public Map<String,Object> getHeaders() {
         return properties.build().getHeaders();
-    }   
+    }  
+    
+    
 }

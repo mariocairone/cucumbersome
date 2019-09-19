@@ -3,13 +3,11 @@ package com.mariocairone.cucumbersome.steps.mock;
 
 import static com.mariocairone.cucumbersome.steps.mock.MockConfig.mockOptions;
 
-import java.util.Map;
-
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.MockServerContainer;
 
-import com.mariocairone.cucumbersome.settings.Settings;
+import com.mariocairone.cucumbersome.steps.http.HttpConfig;
 
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
@@ -20,10 +18,8 @@ import io.cucumber.junit.CucumberOptions;
     glue = {"com.mariocairone.cucumbersome.steps"},
     features = "classpath:features/mock",
     strict = true)
-public class CucumbersomeMockTests {
+public class CucumbersomeMockTest {
 	
-	private static final Map<String, Object> variables = Settings.getInstance().getGlobalVariables();
-
 	
 	private static MockServerContainer mockServer = new MockServerContainer();			
 			
@@ -35,7 +31,9 @@ public class CucumbersomeMockTests {
 		 mockOptions()
 		 		.addService("default",mockServer);
 		 
-		 variables.put("defaultServicePort", mockServer.getServerPort());
+		 HttpConfig.httpOptions().withPort(mockServer.getServerPort());
+		 
+
 		
 
 	 }

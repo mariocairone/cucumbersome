@@ -13,7 +13,6 @@ import org.testcontainers.containers.MockServerContainer;
 import org.testcontainers.containers.Network;
 
 import com.mariocairone.cucumbersome.config.AbstractModuleConfig;
-import com.mariocairone.cucumbersome.config.ConfigurationException;
 
 public class MockConfig extends AbstractModuleConfig {
 
@@ -44,7 +43,7 @@ public class MockConfig extends AbstractModuleConfig {
 	}
 
 	@Override
-	protected void loadProperties() throws ConfigurationException {
+	protected void loadProperties(){
 		if(containers == null)
 			containers = new ConcurrentHashMap<>();
 		if(services == null)
@@ -52,8 +51,8 @@ public class MockConfig extends AbstractModuleConfig {
 				
 		List<String> serviceNames = null;
 
-		if (settings.isDefined(MOCK_SERVICES_PREFIX)) {
-			String servicesProperty = settings.get(MOCK_SERVICES_PREFIX, String.class);
+		if (getSettings().isDefined(MOCK_SERVICES_PREFIX)) {
+			String servicesProperty = getSettings().get(MOCK_SERVICES_PREFIX, String.class);
 			serviceNames = Arrays.asList(servicesProperty.split(","));
 		} else {
 			serviceNames = new ArrayList<>();
@@ -68,16 +67,16 @@ public class MockConfig extends AbstractModuleConfig {
 			String hostKey = String.format("%s.%s%s",
 					MOCK_SERVICES_PREFIX,serviceName,MOCK_SERVICE_HOST_SUFFIX);
 			
-			if (settings.isDefined(hostKey))
-				host = settings.get(hostKey, String.class);
+			if (getSettings().isDefined(hostKey)) {
+				host = getSettings().get(hostKey, String.class);
 				container.withNetworkAliases(host);
-				
+			}
 				
 			String portKey = String.format("%s.%s%s",
 						MOCK_SERVICES_PREFIX,serviceName,MOCK_SERVICE_PORT_SUFFIX);
 				
-			if (settings.isDefined(portKey)) {
-				port = settings.get(portKey, Integer.class);
+			if (getSettings().isDefined(portKey)) {
+				port = getSettings().get(portKey, Integer.class);
 				container.withExposedPorts(port);
 				container.withCommand("-logLevel INFO -serverPort " + port);
 			}

@@ -1,4 +1,4 @@
-package com.mariocairone.cucumbersome.steps;
+package com.mariocairone.cucumbersome.settings;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -9,8 +9,6 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.junit.Test;
-
-import com.mariocairone.cucumbersome.settings.Settings;
 
 public class SettingsTest {
 
@@ -62,12 +60,20 @@ public class SettingsTest {
 	
 
 	@Test
-	public void getSettingsStringPropertyOrDefaultTest() {
+	public void getSettingsStringPropertyOrDefaultNotExistingTest() {
 		String defaultValue ="defaultValue";
 		String prop = Settings.getInstance().getOrDefault("non.existing.prop", defaultValue, String.class);
 		
 		assertEquals(prop, defaultValue);
-	}	
+	}
+
+	@Test
+	public void getSettingsStringPropertyOrDefaultExistingTest() {
+		String value ="http://localhost:8080";
+		String prop = Settings.getInstance().getOrDefault("rest.request.baseUrl", "defaultValue", String.class);
+		
+		assertEquals(prop, value);
+	}		
 	
 	@Test
 	public void getSettingsisDefinedTest() {
@@ -106,6 +112,15 @@ public class SettingsTest {
 		Properties prop = Settings.getInstance().getProperties();		
 		assertNotNull(prop);
 		assertFalse(prop.isEmpty());	
+	}	
+	
+	@Test
+	public void loadSettingsFileNotFoundTest() {
+		String fileName = "not existing";
+		Properties prop = Settings.getInstance().readProperties(fileName);		
+		assertNotNull(prop);
+		assertTrue(prop.isEmpty());
+			
 	}	
 	
 
