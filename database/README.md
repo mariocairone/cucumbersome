@@ -32,7 +32,7 @@ And the database url is "{{postgres.getJdbcUrl()}}"
 ```
 #### Delete all and insert data in a database table
 ```gherkin
-Given the database table "models" contains only the following rows:
+Given the database table "models" contains only the following rows
   | id | created             | modified            | email                 | fullname | password  |
   | 1  | 2014-07-16 00:00:00 | 2014-07-16 00:00:00 | cchacin@superbiz.org  | Carlos   | passw0rd  |
   | 2  | 2014-07-16 00:00:00 | 2014-07-16 00:00:00 | cchacin2@superbiz.org | Carlos2  | passw0rd2 |
@@ -40,7 +40,7 @@ Given the database table "models" contains only the following rows:
 ```
 #### Insert data in a database table
 ```gherkin
-Given the database table "models" contains the following rows:
+Given the database table "models" contains the following rows
   | id | created             | modified            | email                 | fullname | password |
   | 4  | 2015-02-11 00:00:00 | 2015-02-11 00:00:00 | cchacin2@superbiz.org | Carlos2  | passw0rd |
 ```
@@ -59,16 +59,16 @@ Then the database table "models" should contain less than 4 rows
 ```
 #### Assert database table content
 ```gherkin
-And the database table "models" should have the following rows:
+And the database table "models" should have the following rows
   | id | created             | modified            | email                 | fullname | password |
   | 4  | 2015-02-11 00:00:00 | 2015-02-11 00:00:00 | cchacin2@superbiz.org | Carlos2  | passw0rd |
-And the database table "models" should have the following rows:
+And the database table "models" should have the following rows
   | id |
   | 4  |
-And the database table "models" should have the following rows:
+And the database table "models" should have the following rows
   | email 								 |
   | cchacin2@superbiz.org  |
-And the database table "models" should have the following rows:
+And the database table "models" should have the following rows
   | id | email                 | fullname | password |
   | 4  | cchacin2@superbiz.org | Carlos2  | passw0rd |
 ```
@@ -128,12 +128,9 @@ public class CucumbersomeDatabaseIT {
 
  @BeforeClass
   public static void setup() {
-
    databaseOptions()
     .withDatabaseContainer(postgres);
-
-
-   variables.put("postgres",postgres);
+    variables.put("postgres",postgres);
  }
 
 }

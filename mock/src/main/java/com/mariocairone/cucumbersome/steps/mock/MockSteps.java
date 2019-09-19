@@ -60,7 +60,7 @@ public class MockSteps extends BaseStepDefs {
 		
 		return clients.computeIfAbsent(serviceName, key -> {
 			String availableMockServices = clients.keySet().stream().collect(Collectors.joining(", "));
-			throw new RuntimeException("Unable to find http mock service by name:" + key + ". "
+			throw new MockStepsException("Unable to find http mock service by name:" + key + ". "
 					+ "Available mock services are: {" + availableMockServices + "}");
 		});
 	}	

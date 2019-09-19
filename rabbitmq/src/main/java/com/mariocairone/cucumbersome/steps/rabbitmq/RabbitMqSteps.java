@@ -191,7 +191,7 @@ public class RabbitMqSteps extends BaseStepDefs {
 
 	@ParseArgs
 	@Given("^the rabbitmq message body is \"(.+)\"$")
-	public void setRabbitMqMessageBody_(String body) {
+	public void setRabbitMqMessageBodyInLine(String body) {
 		message.setBody(body);
 	}
 
@@ -460,7 +460,7 @@ public class RabbitMqSteps extends BaseStepDefs {
 
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new RabbitMqStepsException(e.getMessage(),e);
 		}
 	}
 

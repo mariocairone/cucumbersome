@@ -26,7 +26,7 @@ import io.cucumber.junit.CucumberOptions;
     glue = {"com.mariocairone.cucumbersome.steps"},
     features = "classpath:features/db",
     strict = true)
-public class CucumbersomeDatabaseIT {
+public class CucumbersomeDatabaseTests {
 	
 	static final Map<String, Object> variables = Settings.getInstance().getGlobalVariables();
 

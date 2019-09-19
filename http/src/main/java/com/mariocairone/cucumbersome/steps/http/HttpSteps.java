@@ -2,7 +2,7 @@ package com.mariocairone.cucumbersome.steps.http;
 
 import static com.jayway.jsonpath.matchers.JsonPathMatchers.hasJsonPath;
 import static com.jayway.jsonpath.matchers.JsonPathMatchers.hasNoJsonPath;
-import static com.mariocairone.cucumbersome.steps.http.HttpConfig.*;
+import static com.mariocairone.cucumbersome.steps.http.HttpConfig.httpOptions;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
@@ -96,7 +96,7 @@ public class HttpSteps extends BaseStepDefs {
 			response = request.request("TRACE", path);
 			break;
         default:
-        	throw new RuntimeException(String.format("Unsupported HTTP method %s", apiMethod));
+        	throw new HttpStepsException(String.format("Unsupported HTTP method %s", apiMethod));
 		}
 
 		this.response = response;
@@ -166,19 +166,19 @@ public class HttpSteps extends BaseStepDefs {
 	@ParseArgs
 	@Given("^the http request form params are(?:[:])?$")
 	public void theRequestFormParamsAre(Map<String, String> params)  {
-		 params = params.entrySet().stream().filter( entry -> !entry.getValue().trim().equals(noContentPlaceHolder))
+		Map<String, String>  formParams = params.entrySet().stream().filter( entry -> !entry.getValue().trim().equals(noContentPlaceHolder))
 				 .collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));			 
-	     request.formParams(params);
+	     request.formParams(formParams);
 	}		
 	
 	@ParseArgs
 	@Given("^the http request Cookies are(?:[:])?$")
 	public void theRequestCookiesAre(Map<String, String> params)  {
 		 
-		 params = params.entrySet().stream().filter( entry -> !entry.getValue().endsWith(noContentPlaceHolder))
+		Map<String, String> cookies = params.entrySet().stream().filter( entry -> !entry.getValue().endsWith(noContentPlaceHolder))
 				 .collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
 		 
-		 request.cookies(params);
+		 request.cookies(cookies);
 	}
 	
 	
@@ -195,10 +195,10 @@ public class HttpSteps extends BaseStepDefs {
 	@Given("^the http request query params are(?:[:])?$")
 	public void theRequestQueryParamsAre(Map<String, String> params)  {
 		 
-		 params = params.entrySet().stream().filter( entry -> !entry.getValue().endsWith(noContentPlaceHolder))
+		Map<String, String>  queryparams = params.entrySet().stream().filter( entry -> !entry.getValue().endsWith(noContentPlaceHolder))
 				 .collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
 		 
-		 request.queryParams(params);
+		 request.queryParams(queryparams);
 	}	
 	
 	@ParseArgs

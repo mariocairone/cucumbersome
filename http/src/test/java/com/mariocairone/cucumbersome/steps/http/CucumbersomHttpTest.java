@@ -36,9 +36,9 @@ import io.cucumber.junit.CucumberOptions;
 		glue = {	"com.mariocairone.cucumbersome.steps" }, 
 		features = "classpath:features/http", 
 		strict = true)
-public class CucumbersomHttpIT  {
+public class CucumbersomHttpTest  {
 
-	static final Map<String, Object> variables = Settings.getInstance().getGlobalVariables();
+	private static final Map<String, Object> variables = Settings.getInstance().getGlobalVariables();
 
 	
 	private static WireMockRule wm = 

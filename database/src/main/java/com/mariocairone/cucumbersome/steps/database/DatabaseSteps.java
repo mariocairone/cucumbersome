@@ -193,8 +193,8 @@ public class DatabaseSteps extends BaseStepDefs {
 	}
 	
 	public String resultSetToStringTable(ResultSet resultSet) throws Exception {
-	    if (resultSet == null) throw new NullPointerException("resultSet == null");
-	    if (!resultSet.isBeforeFirst()) throw new IllegalStateException("Result set not at first.");
+	    if (resultSet == null) throw new DatabaseStepsException("resultSet == null");
+	    if (!resultSet.isBeforeFirst()) throw new DatabaseStepsException("Result set not at first.");
 
 	    List<String> headers = new ArrayList<>();
 	    ResultSetMetaData resultSetMetaData = resultSet.getMetaData();

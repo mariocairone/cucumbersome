@@ -1,4 +1,3 @@
-
 # Cucumbersome Variables
 
 The variables module enable the integration with the template engine context [basis-template](https://github.com/badlogic/basis-template).
@@ -15,7 +14,7 @@ The variable will be resolved by the template engine.
 
 ```gherkin
 Given set system property "mule.env" with value "local"
-And the system properties:
+And the system properties
 |prop1|value1|
 |prop2|value2|    
 ```
@@ -27,10 +26,10 @@ Given the variable "string" with value "string"
 And the variable "var" with value "{{ string }}"
 And the variable "int" with value 2
 And the global variable "int" with value 2
-And the variables:
+And the variables
 |var1|value1|
 |var2|value2|
-And the global variables:
+And the global variables
 |var1|value1|
 |var2|value2|  
 ```
@@ -68,7 +67,7 @@ import org.junit.runner.RunWith;
     glue = {"com.mariocairone.cucumbersome.steps"},
     features = "classpath:features/variable",
     strict = true)
-public class CucumbersomeIT  {
+public class CucumbersomeVariablesIT  {
 
 }
 ```

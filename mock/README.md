@@ -58,7 +58,7 @@ Given the mock with path "/" and method "GET" is added to service "test"
 ```
 #### Mock service if request body match
 ```gherkin
- And the mock receive request with body:
+ And the mock receive request with body
  """
   {
    "test": "test"
@@ -118,16 +118,15 @@ import static com.mariocairone.cucumbersome.steps.mock.MockConfig.mockOptions;
 public class CucumbersomeMockIT  {
 
   @ClassRule
-  public static MockServerContainer mockServer = new MockServerContainer();			
-
-  	 @BeforeClass
-  	  public static void setup() {
-       mockOptions()
-            .addService("default",mockServer);
-
+  public static MockServerContainer mockServer = new MockServerContainer();
+  
+  @BeforeClass
+  public static void setup() {
+  	mockOptions()
+  		.addService("default",mockServer);
 	 }
-
 }
 ```
+
 ---
 Note: be sure to modify the features attribute to match your requirement

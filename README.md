@@ -1,13 +1,12 @@
-
 # Cucumbersome
 
 ![Maven Central](https://img.shields.io/maven-central/v/com.mariocairone.cucumbersome/parent?style=flat-square)  ![GitHub](https://img.shields.io/github/license/mariocairone/cucumbersome) ![GitHub issues](https://img.shields.io/github/issues/mariocairone/cucumbersome) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/mariocairone/cucumbersome?style=social)
 
 Cucumbersome is a small framework created to speed up the testing process using cucumber framework.
 The scope of the framework is to provide a collection of predefined steps to test system integrations using the following technologies:
-  -  HTTP
-  -  AMQP
-  -  SQL        
+- HTTP
+- AMQP
+- SQL        
 
 Here is the list of available modules:
 - [core](core/README.md)
@@ -68,10 +67,10 @@ Example:
   http.request.basePath=/
   http.request.port=8080
 ```
+
 *Please refer to the module documentation for the list of available properties.*
 
 * Write your feature file
-
 * Run the test
 
 ```shell

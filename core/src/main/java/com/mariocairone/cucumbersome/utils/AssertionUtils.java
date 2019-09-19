@@ -22,6 +22,7 @@ public class AssertionUtils {
 			break;
 		default:
 			assertEquals("Expected to have " + expected + " but has " + actual, expected, actual);
+			break;
 		}
 	}
 }

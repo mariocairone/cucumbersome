@@ -23,9 +23,9 @@ import io.cucumber.junit.CucumberOptions;
     glue = {"com.mariocairone.cucumbersome.steps"},
     features = "classpath:features/rabbitmq",
     strict = true)
-public class CucumbersomeRabbitMqIT {
+public class CucumbersomeRabbitMqTest {
 
-	static final Map<String, Object> variables = Settings.getInstance().getGlobalVariables();
+	private static final Map<String, Object> variables = Settings.getInstance().getGlobalVariables();
 
 	
 	private static RabbitMQContainer rabbitMq = new RabbitMQContainer()				
@@ -43,8 +43,6 @@ public class CucumbersomeRabbitMqIT {
 		 
 		 variables.put("rabbitMqContainerIp",rabbitMq.getContainerIpAddress());
 		 variables.put("rabbitMqContainerPort",rabbitMq.getFirstMappedPort());
-			 	
-
 	 }
 	 
 

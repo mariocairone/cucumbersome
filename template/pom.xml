@@ -9,18 +9,17 @@
 		<artifactId>parent</artifactId>
 		<version>${revision}</version>
 	</parent>
-	
+
 	<artifactId>template</artifactId>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
+
 		<basis-template.version>1.7</basis-template.version>
-		<log4j.version>2.8.2</log4j.version>
 		<commons-io.version>2.6</commons-io.version>
-		<aspectj.version>1.8.7</aspectj.version>
-		<aspectj-maven-plugin.version>1.8</aspectj-maven-plugin.version>
+		
 	</properties>
 
 	<dependencies>
@@ -47,5 +46,4 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
 </project>

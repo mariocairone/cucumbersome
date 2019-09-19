@@ -20,9 +20,9 @@ import io.cucumber.junit.CucumberOptions;
     glue = {"com.mariocairone.cucumbersome.steps"},
     features = "classpath:features/mock",
     strict = true)
-public class CucumbersomeMockIT {
+public class CucumbersomeMockTests {
 	
-	static final Map<String, Object> variables = Settings.getInstance().getGlobalVariables();
+	private static final Map<String, Object> variables = Settings.getInstance().getGlobalVariables();
 
 	
 	private static MockServerContainer mockServer = new MockServerContainer();			

@@ -13,7 +13,7 @@ import io.cucumber.junit.CucumberOptions;
     glue = {"com.mariocairone.cucumbersome.steps"},
     features = "classpath:features/variables",
     strict = true)
-public class CucumbersomeVariablesIT {
+public class CucumbersomeVariablesTest {
 
   
 }

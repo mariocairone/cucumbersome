@@ -1,7 +1,7 @@
 
 
 # Cucumber Http
-The steps in this module enable REST endpoints test using  [Cucumber](https://cucumber.io)
+The steps in this module enable REST endpoints test using [Cucumber](https://cucumber.io)
 
 ## Configuration
 
@@ -33,16 +33,18 @@ http.nocontent.placeholder=-
 
 ## Steps in this library
 
-###  Configure REST Client
+###  Configure Http Client
+
 ```gherkin
-Given the http request baseURI is "http://localhost"
-And the http request port is 8080    
+Given the http request baseURI is "http URI here"
+And the http request port is 8080
 And the http request basePath is "/"
 ```
+
 ###  Prepare HTTP request
 #### Add Authorization header
 ```gherkin
-Given the http request has Authorization header "AL 123:123"
+Given the http request has Authorization header "Authorization Here"
 ```
 #### Add basic Authentication
 ```gherkin
@@ -50,7 +52,7 @@ Given the http request basic Authentication username is "mule" and password is "
 ```
 #### Add Oauth2 token  
 ```gherkin
-Given the http request OAuth2 Authentication token is "asvdasdvgargerhswreth"
+Given the http request OAuth2 Authentication token is "OAuth2 token here"
 ```
 #### Set Content-Type
 ```gherkin
@@ -62,18 +64,18 @@ Given the http request accept Content-Type "*/*"
 ```
 ####  Set Cookies
 ```gherkin
-Given the http request Cookies are:
+Given the http request Cookies are
    | MyCoockie | MyCoockieValue |   
 ```
 ####  Set Headers
 ```gherkin
-Given the http request headers are:
+Given the http request headers are
   | MyHeader | MyHeaderValue |
 ```
 
 ####  Set Query Params
 ```gherkin
-Given the http request query params are:
+Given the http request query params are
   | param | paramValue |
 ```
 ####  Set Body
@@ -81,7 +83,7 @@ Given the http request query params are:
 * In-Line
 
 ```gherkin
-Given the http request body is:
+Given the http request body is
 """
 {
   "test": "test"
@@ -92,7 +94,7 @@ Given the http request body is:
 * From File
 
 ```gherkin
-Given the http request body is:
+Given the http request body is
 """
 readFile("body.json")
 """   
@@ -100,7 +102,7 @@ readFile("body.json")
 
 ####  Set Form Params
 ```gherkin
-Given the http request form params are:
+Given the http request form params are
    | param | paramValue |   
 ```
 
@@ -120,19 +122,19 @@ Given the http request DELETE "/" is executed
 ```
 ####  Execute http request and set the body
 ```gherkin
-Given the http request POST "/withData" with following body is executed:
+Given the http request POST "/withData" with following body is executed
 """
 {
   "test": "test"
 }
 """
-Given the http request PUT "/withData" with following body is executed:
+Given the http request PUT "/withData" with following body is executed
 """
 test: "test"
 
 |YamlToJson  
 """
-Given the http request PATCH "/withData" with following body is executed:
+Given the http request PATCH "/withData" with following body is executed
 """
 readFile("body.json")
 """   
@@ -161,13 +163,13 @@ Then the http response should contain an empty array
 * Full Body Content
 
 ```gherkin
-Then the http response body should be:
+Then the http response body should be
 """
 {
  "foo": "bar"
 }
 """
-Then the http response body should be:
+Then the http response body should be
 """
 {
  "foo": "{{ test }}"
@@ -181,7 +183,7 @@ Then the http response body should be:
 And the http response body should contain "[0].foo"
 And the http response body should contain "[0].foo" with value "bar"
 And the http response body should not contain "[0].foo" with value "wee"    
-And the http response body entity "[2].foos" should be:
+And the http response body entity "[2].foos" should be
 """
 ["bar","wee"]
 """
@@ -254,5 +256,6 @@ public class CucumbersomeHttpIT   {
 
 }
 ```
+
 ---
 Note: be sure to modify the features attribute to match your requirement

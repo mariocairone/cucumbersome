@@ -83,7 +83,7 @@ Then the rabbitmq message is received from the queue "test_direct_queue"
 ```
 #### Set Message body
 ```gherkin
-And the rabbitmq message body is:
+And the rabbitmq message body is
 """
 {
  "test": "test"
@@ -97,11 +97,9 @@ And the rabbitmq message body should contain "[0].foo"
 And the rabbitmq message body should contain "[0].foo" with value "bar"
 And the rabbitmq message body should not contain "[0].bar"
 And the rabbitmq message body should not contain "[0].foo" with value "wee"
-And the rabbitmq message body entity "[2].foos" should be:
+And the rabbitmq message body entity "[2].foos" should be
   """
-  - bar
-  - wee
-  |YamlToJson
+	["bar", "wee"]
   """
 And the rabbitmq message body should be an array with 3 elements
 And the rabbitmq message body should be an array with at least 1 element
@@ -114,6 +112,7 @@ And the rabbitmq message body entity "[2].foos" should be an array with at most 
 And the rabbitmq message body entity "[2].foos" should be an array with less than "3" elements   
 And the rabbitmq message body entity "[2].foos" should be an array with more than "1" element   
 ```     
+
 ## Installation
 
 Add dependency to your `pom.xml`
@@ -130,20 +129,43 @@ Add dependency to your `pom.xml`
 Create the test class with the package glue
 
 ```java
+import java.util.Map;
+import org.junit.ClassRule;
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
 import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(plugin = { "pretty", "html:target/cucumber",
-									  "json:target/cucumber/cucumber.json",
-									  "junit:target/cucumber/cucumber.xml"	},
+"json:target/cucumber/cucumber.json",
+"junit:target/cucumber/cucumber.xml"},
     glue = {"com.mariocairone.cucumbersome.steps"},
-    features = "classpath:features/rabbitmq",
+    features = "classpath:features/mock",
     strict = true)
-public class CucumbersomeIT  {
+public class CucumbersomeMockIT   {
 
+	static final Map<String, Object> variables = Settings.getInstance().getGlobalVariables();	
+	
+	@ClassRule
+	private static RabbitMQContainer rabbitMq = new RabbitMQContainer()				
+            .withExposedPorts(5672)
+            .withUser("mule", "password")
+            .withVhost("/")
+            .waitingFor(Wait.forListeningPort());
+
+	
+	@BeforeClass
+	public static void setup() {
+		 rabbitMq.start();
+		 rabbitMqOptions()
+		 		.withRabbitMqContainer(rabbitMq);
+		 
+		 variables.put("rabbitMqContainerIp",rabbitMq.getContainerIpAddress());
+		 variables.put("rabbitMqContainerPort",rabbitMq.getFirstMappedPort());
+	 }
+	 
 }
 ```
+
 ---
 Note: be sure to modify the features attribute to match your requirement

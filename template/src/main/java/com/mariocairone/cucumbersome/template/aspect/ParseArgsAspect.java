@@ -19,10 +19,6 @@ import com.mariocairone.cucumbersome.template.parser.TemplateParser;
 @Aspect
 public class ParseArgsAspect {
 
-	public ParseArgsAspect() {
-		super();
-	}
-
 	@Around("@annotation(com.mariocairone.cucumbersome.template.aspect.ParseArgs) ")
 	public void before(ProceedingJoinPoint joinPoint) throws Throwable {
 		joinPoint.proceed(parseArguments(joinPoint));
@@ -67,16 +63,15 @@ public class ParseArgsAspect {
 
 		List<Field> fields = getAllFields(object.getClass());
 
-		
 		for (Field f : fields) {
 			f.setAccessible(true);
 			// use equals to compare the data type.
-			if (f.getType().equals(TemplateParser.class)) {
+			if (TemplateParser.class.isAssignableFrom(f.getType())) {
 
-				if (TemplateParser.class.isAssignableFrom(f.getType()))
-					try {
-						return TemplateParser.class.cast(f.get(object));
-					} catch (Exception e) {}
+				try {
+					return TemplateParser.class.cast(f.get(object));
+				} catch (Exception e) {
+				}
 			}
 		}
 		return null;
