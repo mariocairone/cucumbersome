@@ -5,17 +5,16 @@ import java.util.Map;
 import com.mariocairone.cucumbersome.settings.Settings;
 import com.mariocairone.cucumbersome.template.parser.TemplateParser;
 
-
 public class BaseStepDefs {
 
 	protected Settings settings = Settings.getInstance();
-	
-	protected Map<String,Object> globalVariables;
-	
-	protected Map<String,Object> variables;
-	
+
+	protected Map<String, Object> globalVariables;
+
+	protected Map<String, Object> variables;
+
 	protected TemplateParser parser;
-		
+
 	public BaseStepDefs(TemplateParser parser) {
 		super();
 		parser.setGlobalVariables(settings.getGlobalVariables());
@@ -24,7 +23,7 @@ public class BaseStepDefs {
 		this.variables = parser.getVariables();
 
 	}
-		
+
 	public TemplateParser getParser() {
 		return this.parser;
 	}
@@ -56,6 +55,5 @@ public class BaseStepDefs {
 	protected void setParser(TemplateParser parser) {
 		this.parser = parser;
 	}
-	
-	
+
 }

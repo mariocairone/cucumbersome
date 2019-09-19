@@ -6,10 +6,11 @@
 	<parent>
 		<groupId>com.mariocairone.cucumbersome</groupId>
 		<artifactId>parent</artifactId>
-		<version>${revision}</version>
+		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>variables</artifactId>
 
+	<name>Cucumbersome: Variables</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -23,7 +24,7 @@
 			<artifactId>core</artifactId>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<plugins>
 			<plugin>
@@ -31,5 +32,5 @@
 				<artifactId>aspectj-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
-	</build>	
+	</build>
 </project>

@@ -1,9 +1,6 @@
 Feature: Mockserver
 
-  #  Background: The Mock Server is running
-  #   Given the mock server is running
-  #   And the variable "serviceName" with value "default"
-  #   And the http request port is "{{ mockServerPorts.get("default")}}"
+
   # Mock Rest endpoint
   Scenario: Mock Rest endpoint
     Given the mock with path "/" and method "GET" is added to service "default"

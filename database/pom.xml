@@ -5,9 +5,10 @@
 	<parent>
 		<groupId>com.mariocairone.cucumbersome</groupId>
 		<artifactId>parent</artifactId>
-		<version>${revision}</version>
+		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>database</artifactId>
+	<name>Cucumbersome: Database</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

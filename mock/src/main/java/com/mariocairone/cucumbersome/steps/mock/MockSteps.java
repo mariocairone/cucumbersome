@@ -27,6 +27,7 @@ import com.mariocairone.cucumbersome.steps.BaseStepDefs;
 import com.mariocairone.cucumbersome.template.aspect.ParseArgs;
 import com.mariocairone.cucumbersome.template.parser.TemplateParser;
 
+import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 
 
@@ -36,9 +37,9 @@ import cucumber.api.java.en.Given;
 @SuppressWarnings("deprecation")
 public class MockSteps extends BaseStepDefs {
 			
-	public MockServerClient client;
-	public HttpRequest request;
-	public HttpResponse response;
+	private MockServerClient client;
+	private HttpRequest request;
+	private HttpResponse response;
 
 	private Map<String, MockServerClient> clients;
 
@@ -95,6 +96,13 @@ public class MockSteps extends BaseStepDefs {
 
 	private void restoreExpectation(Expectation exp) {
 		client.when(exp.getHttpRequest(), exp.getTimes(), exp.getTimeToLive()).respond(exp.getHttpResponse());
+	}
+	
+	@Before
+	public void before() {
+		clients.forEach( (name,client) -> {
+			client.reset();
+		});
 	}
 	
 	@ParseArgs	

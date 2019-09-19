@@ -2,10 +2,13 @@ package com.mariocairone.cucumbersome.steps.rabbitmq;
 
 
 import static com.mariocairone.cucumbersome.steps.rabbitmq.RabbitMqConfig.rabbitMqOptions;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Map;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.RabbitMQContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
@@ -27,23 +30,34 @@ public class CucumbersomeRabbitMqTest {
 
 	private static final Map<String, Object> variables = Settings.getInstance().getGlobalVariables();
 
-	
-	private static RabbitMQContainer rabbitMq = new RabbitMQContainer()				
+	@ClassRule
+	public static RabbitMQContainer rabbitMq = new RabbitMQContainer()				
             .withExposedPorts(5672)
             .withUser("mule", "password")
-            .withVhost("/")
+            .withVhost("/")            
+            .withPermission("/", "mule", ".*", ".*",".*")
             .waitingFor(Wait.forListeningPort());
 
 	
 	 @BeforeClass
 	  public static void init() {
-		 rabbitMq.start();
+
+		 variables.put("rabbitMqContainerIp",rabbitMq.getContainerIpAddress());
+		 variables.put("rabbitMqContainerPort",rabbitMq.getMappedPort(5672));
+		 
 		 rabbitMqOptions()
 		 		.withRabbitMqContainer(rabbitMq);
 		 
-		 variables.put("rabbitMqContainerIp",rabbitMq.getContainerIpAddress());
-		 variables.put("rabbitMqContainerPort",rabbitMq.getFirstMappedPort());
+
+		                
 	 }
 	 
+	@Test
+	public void testWithContainer() throws Exception {
+		 
+		 assertEquals(rabbitMqOptions().getRabbitMqContainer(), rabbitMq);
+	}
+	
+
 
 }

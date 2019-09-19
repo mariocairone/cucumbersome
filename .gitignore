@@ -63,3 +63,6 @@ src/main/resources/log4j2-test.xml
 app.log
 **/app.log
 .sts4-cache/
+
+.flattened-pom.xml
+**/*.flattened-pom.xml

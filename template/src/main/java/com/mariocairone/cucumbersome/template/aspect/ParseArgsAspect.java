@@ -59,7 +59,7 @@ public class ParseArgsAspect {
 		return newArgumentList.toArray();
 	}
 
-	private TemplateParser getTemplateParser(Object object) {
+	protected TemplateParser getTemplateParser(Object object) {
 
 		List<Field> fields = getAllFields(object.getClass());
 

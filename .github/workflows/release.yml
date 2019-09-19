@@ -1,0 +1,35 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Master
+      uses: actions/checkout@master
+      with:
+        ref: master
+    - name: Install GPG keys
+      run:  echo "$PGP_PUBLIC_KEY" | gpg --import && echo "$PGP_PRIVATE_KEY" | gpg --batch --import && echo $(gpg --version)
+      env:
+        PGP_PUBLIC_KEY: ${{ secrets.PGP_PUBLIC_KEY }}
+        PGP_PRIVATE_KEY: ${{ secrets.PGP_PRIVATE_KEY }}
+    - name: Get the Release Version
+      id: get_version
+      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+    - name: Configure Git Credentials for release
+      run: git config --global user.email "mario.cairone@protonmail.com" &&  git config --global user.name "mariocairone" && git fetch --all && git checkout master && git remote rm origin && git remote add origin https://mariocairone:$GITHUB_TOKEN@github.com/mariocairone/cucumbersome.git && git push --delete origin ${{ steps.get_version.outputs.VERSION }} && git tag -d ${{ steps.get_version.outputs.VERSION }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Perform a release
+      run: export GPG_TTY=$(tty) && mvn release:prepare release:perform -Darguments="-DskipTests -Dgpg.passphrase=$PGP_PASSPHRASE" -DautoVersionSubmodules -DreleaseVersion=${{ steps.get_version.outputs.VERSION }} -B -gs settings.xml
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        OSSH_USERNAME: ${{ secrets.OSSH_USERNAME }}
+        OSSH_PASSWORD: ${{ secrets.OSSH_PASSWORD }}
+        PGP_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}

@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 
 import org.hamcrest.Matchers;
+import org.json.JSONException;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import com.jayway.jsonpath.JsonPath;
@@ -43,8 +44,8 @@ import net.minidev.json.JSONArray;
 public class HttpSteps extends BaseStepDefs {
 
 	
-	public Response response;
-	public RequestSpecification request;
+	private Response response;
+	private RequestSpecification request;
 
 
 	private String noContentPlaceHolder;
@@ -68,9 +69,7 @@ public class HttpSteps extends BaseStepDefs {
 	}
 
 	public void callAPI(String apiMethod, String path) {
-		Response response = null;
-
-		switch (apiMethod) {
+			switch (apiMethod) {
 		case "GET":
 			response = request.get(path);
 			break;
@@ -99,7 +98,6 @@ public class HttpSteps extends BaseStepDefs {
         	throw new HttpStepsException(String.format("Unsupported HTTP method %s", apiMethod));
 		}
 
-		this.response = response;
 	}
 	
 	@Before
@@ -260,7 +258,7 @@ public class HttpSteps extends BaseStepDefs {
 	
 	@ParseArgs	
 	@Then("^the http response body should be(?:[:])?$")
-	public void theResponseShouldBe(String expectedBody) throws Exception    {
+	public void theResponseShouldBe(String expectedBody) throws JSONException     {
 		String responseBody = response.getBody().asString();
 		JSONAssert.assertEquals(expectedBody, responseBody, false);
 	}
@@ -332,7 +330,7 @@ public class HttpSteps extends BaseStepDefs {
 	
 	@ParseArgs
 	@Then("^the http response body entity \"([^\"]*)\" should be(?:[:])?$")
-	public void theResponseEntotyShouldBe(String jsonPath, String data) throws Exception  {
+	public void theResponseEntotyShouldBe(String jsonPath, String data) throws JSONException   {
 		
 		String responseEntity = response.getBody().jsonPath().getString(jsonPath);
 

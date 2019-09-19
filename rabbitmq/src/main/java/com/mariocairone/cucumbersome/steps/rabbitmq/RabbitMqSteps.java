@@ -15,7 +15,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -25,9 +27,10 @@ import java.util.function.Consumer;
 
 import org.json.JSONException;
 import org.skyscreamer.jsonassert.JSONAssert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jayway.jsonpath.JsonPath;
-import com.mariocairone.cucumbersome.config.ConfigurationException;
 import com.mariocairone.cucumbersome.steps.BaseStepDefs;
 import com.mariocairone.cucumbersome.template.aspect.ParseArgs;
 import com.mariocairone.cucumbersome.template.parser.TemplateParser;
@@ -49,20 +52,18 @@ import net.minidev.json.JSONArray;
 @SuppressWarnings("deprecation")
 public class RabbitMqSteps extends BaseStepDefs {
 
-   
+	private final Logger logger = LoggerFactory.getLogger(RabbitMqSteps.class);
+
+	private ConnectionFactory factory;
+	private Connection connection;
+	private Channel channel;
+
 	private String rabbitDefaultExchange;
 	private Integer rabbitDefaultReadTimeout;
 
-	
-	
-	private ConnectionFactory factory;
-	private Connection connection;
+	private MessageWrapper message;
 
-	private Channel channel;
-
-	public MessageWrapper message;
-
-	public RabbitMqSteps(TemplateParser parser) throws Exception {
+	public RabbitMqSteps(TemplateParser parser) throws IOException, TimeoutException   {
 		super(parser);
 		factory = new ConnectionFactory();
 		setRabbitHost(rabbitMqOptions().getRabbitHost());
@@ -77,11 +78,11 @@ public class RabbitMqSteps extends BaseStepDefs {
 		setRabbitAmqpUrl(rabbitMqOptions().getAmqpUrl());
 	}
 
-	public void sendMessage(String exchange, String routingKey, MessageWrapper message) throws Exception {
+	public void sendMessage(String exchange, String routingKey, MessageWrapper message) throws IOException  {
 		channel.basicPublish(exchange, routingKey, message.getProperties().build(), message.getBody().getBytes());
 	}
 
-	public MessageWrapper receiveMessage(String queue, int timeoutInSeconds) throws Exception {
+	public MessageWrapper receiveMessage(String queue, int timeoutInSeconds) throws IOException, InterruptedException  {
 		BlockingQueue<MessageWrapper> result = new ArrayBlockingQueue<MessageWrapper>(1);
 		channel.basicConsume(queue, true, new DefaultConsumer(channel) {
 			@Override
@@ -95,7 +96,7 @@ public class RabbitMqSteps extends BaseStepDefs {
 		return result.poll(timeoutInSeconds, TimeUnit.SECONDS);
 	}
 
-	public void waitForMessage(String queue, Optional<Integer> timeout) throws Exception {
+	public void waitForMessage(String queue, Optional<Integer> timeout) throws IOException, InterruptedException  {
 		message = receiveMessage(queue, timeout.orElse(getTimeout()));
 		assertThat(message, is(notNullValue()));
 	}
@@ -104,19 +105,19 @@ public class RabbitMqSteps extends BaseStepDefs {
 		return rabbitDefaultReadTimeout;
 	}
 
-	public void declareExchange(String exchange, String type, boolean durable) throws Exception, TimeoutException {
+	public void declareExchange(String exchange, String type, boolean durable) throws IOException, TimeoutException  {
 		getChannel().exchangeDeclare(exchange, type, durable);
 	}
 
-	public void declareQueue(String queueName, String exchange, String routingKey) throws Exception {
-		 Channel channel = getChannel();
+	public void declareQueue(String queueName, String exchange, String routingKey) throws IOException, TimeoutException  {
+		Channel chan = getChannel();
 
 		boolean durable = false;
 		boolean exclusive = false;
 		boolean autoDelete = false;
-		channel.queueDeclare(queueName, durable, exclusive, autoDelete, null);
+		chan.queueDeclare(queueName, durable, exclusive, autoDelete, null);
 
-		channel.queueBind(queueName, exchange, routingKey);
+		chan.queueBind(queueName, exchange, routingKey);
 	}
 
 	@Before
@@ -125,7 +126,7 @@ public class RabbitMqSteps extends BaseStepDefs {
 	}
 
 	@After
-	public void after() {
+	public void after() throws IOException, TimeoutException {
 		invalidate();
 	}
 
@@ -209,73 +210,73 @@ public class RabbitMqSteps extends BaseStepDefs {
 
 	@ParseArgs
 	@Given("^the rabbitmq queue \"([a-zA-Z0-9_\\-\\.:]+)\" is bind to exchange \"([a-zA-Z0-9_\\-\\.:]+)\" with routing key \"(.+)\"$")
-	public void bindRabbitMqQueueToDirectExchangeWithRoutingKey(String queueName, String exchange, String routingKey)
-			throws Exception {
+	public void bindRabbitMqQueueToDirectExchangeWithRoutingKey(String queueName, String exchange, String routingKey) throws IOException, TimeoutException
+			{
 
 		declareQueue(queueName, exchange, routingKey);
 	}
 
 	@ParseArgs
 	@Given("^the rabbitmq queue \"([a-zA-Z0-9_\\-\\.:]+)\" is bind to exchange \"([a-zA-Z0-9_\\-\\.:]+)\"$")
-	public void bindRabbitMqQueueToExchangeWithoutRoutingKey(String queueName, String exchange) throws Exception {
+	public void bindRabbitMqQueueToExchangeWithoutRoutingKey(String queueName, String exchange) throws IOException, TimeoutException  {
 		declareQueue(queueName, exchange, "");
 	}
 
 	@ParseArgs
 	@Given("^the rabbitmq queue \"([a-zA-Z0-9_\\-\\.:]+)\" is bind to default exchange with routing key \"(.+)\"$")
-	public void bindRabbitMqQueueToDefaultExchangeWithRoutingKey(String queueName, String routingKey) throws Exception {
+	public void bindRabbitMqQueueToDefaultExchangeWithRoutingKey(String queueName, String routingKey) throws IOException, TimeoutException  {
 
 		declareQueue(queueName, rabbitDefaultExchange, routingKey);
 	}
 
 	@ParseArgs
 	@When("^the rabbitmq( durable)? exchange \"([a-zA-Z0-9_\\-\\.:]+)\" is declared$")
-	public void createRabbitMQExchange(String durable, String exchange) throws Exception {
+	public void createRabbitMQExchange(String durable, String exchange) throws IOException, TimeoutException  {
 
 		declareExchange(exchange, "direct", durable != null);
 	}
 
 	@ParseArgs
 	@When("^the rabbitmq( durable)? exchange \"([a-zA-Z0-9_\\-\\.:]+)\" of type \"(topic|direct|fanout)\" is declared$")
-	public void createRabbitMQExchangeWithType(String durable, String exchange, String type) throws Exception {
+	public void createRabbitMQExchangeWithType(String durable, String exchange, String type) throws IOException, TimeoutException{
 
 		declareExchange(exchange, type, durable != null);
 	}
 
 	@ParseArgs
 	@When("^the rabbitmq client sends message with routing key \"(.+)\"$")
-	public void sendRabbitMQMessageWithRoutingKey(String routingKey) throws Exception {
+	public void sendRabbitMQMessageWithRoutingKey(String routingKey) throws IOException  {
 
 		sendMessage(rabbitDefaultExchange, routingKey, message);
 	}
 
 	@ParseArgs
 	@When("^the rabbitmq client sends message to exchange \"([a-zA-Z0-9_\\-\\.:]+)\" with routing key \"(.+)\"$")
-	public void sendRabbitMQMessageToExchangeWithRoutingKey(String exchange, String routingKey) throws Exception {
+	public void sendRabbitMQMessageToExchangeWithRoutingKey(String exchange, String routingKey) throws IOException  {
 		sendMessage(exchange, routingKey, message);
 	}
 
 	@ParseArgs
 	@When("^the rabbitmq client sends message to fanout exchange \"([a-zA-Z0-9_\\-\\.:]+)\"$")
-	public void sendRabbitMQMessageToFanoutExchange(String exchange) throws Exception {
+	public void sendRabbitMQMessageToFanoutExchange(String exchange) throws IOException {
 		sendMessage(exchange, "", message);
 	}
 
 	@ParseArgs
 	@Then("^the rabbitmq message is received from the queue \"([a-zA-Z0-9_\\-\\.:]+)\"$")
-	public void receiveRabbitMQMessageFromQueue(String queue) throws Exception {
+	public void receiveRabbitMQMessageFromQueue(String queue) throws IOException, InterruptedException  {
 		waitForMessage(queue, Optional.empty());
 	}
 
 	@ParseArgs
 	@Then("^the rabbitmq message is received from the queue \"([a-zA-Z0-9_\\-\\.:]+)\" within (\\d+) seconds$")
-	public void receiveRabbitMQMessageFromQueueWithinTime(String queue, Integer timeout) throws Exception {
+	public void receiveRabbitMQMessageFromQueueWithinTime(String queue, Integer timeout) throws IOException, InterruptedException  {
 		waitForMessage(queue, Optional.of(timeout));
 	}
 
 	@ParseArgs
 	@Then("^the rabbitmq message entity \"([^\"]*)\" is stored in variable \"([^\"]*)\"$")
-	public void storeRabbitMQMessageEntityInVariable(String entity, String key) throws Exception {
+	public void storeRabbitMQMessageEntityInVariable(String entity, String key) {
 		Object value = JsonPath.compile(key).read(message.getBody());
 		variables.put(key, value);
 	}
@@ -385,7 +386,14 @@ public class RabbitMqSteps extends BaseStepDefs {
 		AssertionUtils.compareCounts(Optional.ofNullable(comparisonAction).orElse(""), intCount, jsonArray.size());
 
 	}
-
+	@ParseArgs
+	@Given("^the rabbitmq message headers are(?:[:])?$")
+	public void theRequestHeadersAre(Map<String, String> params)  {	
+		Map<String, Object> headers = new HashMap<String, Object>();
+		headers.putAll(params);
+		message.getProperties().headers(headers);
+	}
+	
 	@ParseArgs
 	@Then("^the rabbitmq message headers should contain \"([^\"]*)\"$")
 	public void assertRabbitMQMessageHeadersContains(String header) {
@@ -401,7 +409,7 @@ public class RabbitMqSteps extends BaseStepDefs {
 	@ParseArgs
 	@Then("^the rabbitmq message headers should contain \"([^\"]*)\" with value \"([^\"]*)\"$")
 	public void assertRabbitMQMessageHeadersContainsWithValue(String header, String value) {
-		Object headerValue = message.getHeaders().get(header);
+		String headerValue = message.getHeaders().get(header).toString();
 		assertEquals(value, headerValue);
 	}
 
@@ -409,11 +417,12 @@ public class RabbitMqSteps extends BaseStepDefs {
 	@Then("^the rabbitmq message headers should not contain \"([^\"]*)\" with value \"([^\"]*)\"$")
 	public void assertRabbitMQMessageHeadersNotContainsWithValue(String header, String value) {
 		Object headerValue = message.getHeaders().get(header);
-		assertNotEquals(value, headerValue);
+		if(headerValue != null)
+			assertNotEquals(value, headerValue.toString());
 	}
 
-	protected void invalidate() {
-		try {
+	protected void invalidate() throws IOException, TimeoutException {
+	//	try {
 			if (channel != null) {
 				channel.close();
 				channel = null;
@@ -422,10 +431,11 @@ public class RabbitMqSteps extends BaseStepDefs {
 				connection.close();
 				connection = null;
 			}
-		} catch (Exception e) {
-			throw new ConfigurationException(e.getMessage(), e);
-
-		}
+	//	}
+		//catch ( ) {
+//			throw new IllegalStateException(e.getMessage(), e);
+//
+//		}
 	}
 
 	private Connection getConnection() throws IOException, TimeoutException {
@@ -443,7 +453,7 @@ public class RabbitMqSteps extends BaseStepDefs {
 		return channel;
 	}
 
-	private <T> void setConnectionFactoryParameter(Consumer<T> setter, T value) {
+	private <T> void setConnectionFactoryParameter(Consumer<T> setter, T value) throws IOException, TimeoutException {
 		if (value == null) {
 			return;
 		}
@@ -460,7 +470,7 @@ public class RabbitMqSteps extends BaseStepDefs {
 
 			}
 		} catch (Exception e) {
-			throw new RabbitMqStepsException(e.getMessage(),e);
+			throw new RabbitMqStepsException(e.getMessage(), e);
 		}
 	}
 
@@ -468,24 +478,24 @@ public class RabbitMqSteps extends BaseStepDefs {
 	// Setters
 	// ***************************************
 
-	private void setRabbitHost(String rabbitHost) {
+	private void setRabbitHost(String rabbitHost) throws IOException, TimeoutException {
 		setConnectionFactoryParameter(factory::setHost, rabbitHost);
 	}
 
-	private void setRabbitPort(Integer rabbitPort) {
+	private void setRabbitPort(Integer rabbitPort) throws IOException, TimeoutException {
 		setConnectionFactoryParameter(factory::setPort, rabbitPort);
 
 	}
 
-	private void setRabbitUsername(String rabbitUsername) {
+	private void setRabbitUsername(String rabbitUsername) throws IOException, TimeoutException {
 		setConnectionFactoryParameter(factory::setUsername, rabbitUsername);
 	}
 
-	private void setRabbitPassword(String rabbitPassword) {
+	private void setRabbitPassword(String rabbitPassword) throws IOException, TimeoutException {
 		setConnectionFactoryParameter(factory::setPassword, rabbitPassword);
 	}
 
-	protected void setRabbitVirtualHost(String rabbitVirtualHost) {
+	protected void setRabbitVirtualHost(String rabbitVirtualHost) throws IOException, TimeoutException {
 		setConnectionFactoryParameter(factory::setVirtualHost, rabbitVirtualHost);
 	}
 
@@ -497,19 +507,21 @@ public class RabbitMqSteps extends BaseStepDefs {
 		this.rabbitDefaultExchange = rabbitDefaultExchange;
 	}
 
-	protected void setRabbitAmqpUrl(String amqpUrl) {
+	protected void setRabbitAmqpUrl(String amqpUrl) throws IOException, TimeoutException {
 		setConnectionFactoryParameter(t -> {
 			try {
 				factory.setUri(t);
-			} catch (Exception e) { e.printStackTrace();}
+			} catch (Exception e) {
+				logger.error(e.getMessage(),e);
+			}
 		}, amqpUrl);
-	}	
-	
+	}
+
 	protected void setRabbitDefaultReadTimeout(Integer rabbitDefaultReadTimeout) {
 		this.rabbitDefaultReadTimeout = rabbitDefaultReadTimeout;
 	}
 
-	protected void setExchanges(List<RabbitExchangeConfig> exchanges) throws TimeoutException, Exception {
+	protected void setExchanges(List<RabbitExchangeConfig> exchanges) throws IOException, TimeoutException  {
 		for (RabbitExchangeConfig exchange : exchanges) {
 			declareExchange(exchange.getName(), exchange.getType(), exchange.getDurable());
 		}

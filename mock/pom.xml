@@ -5,9 +5,11 @@
 	<parent>
 		<groupId>com.mariocairone.cucumbersome</groupId>
 		<artifactId>parent</artifactId>
-		<version>${revision}</version>
+		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>mock</artifactId>
+
+	<name>Cucumbersome: Mock</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -29,24 +31,30 @@
 		<dependency>
 			<groupId>com.mariocairone.cucumbersome</groupId>
 			<artifactId>variables</artifactId>
-		</dependency>			
+		</dependency>
 		<dependency>
 			<groupId>com.mariocairone.cucumbersome</groupId>
 			<artifactId>http</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
-		</dependency>			
+		</dependency>
 
 		<dependency>
-		    <groupId>org.testcontainers</groupId>
-		    <artifactId>mockserver</artifactId>
-		    <version>${testcontainers.version}</version>
-		</dependency>			
+			<groupId>org.testcontainers</groupId>
+			<artifactId>mockserver</artifactId>
+			<version>${testcontainers.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.mock-server</groupId>
 			<artifactId>mockserver-netty</artifactId>
 			<version>${mockserver-netty.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.vaadin.external.google</groupId>
+			<artifactId>android-json</artifactId>
+			<version>0.0.20131108.vaadin1</version>
+			<scope>provided</scope>
+		</dependency>		
 	</dependencies>
 	<build>
 		<plugins>

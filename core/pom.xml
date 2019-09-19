@@ -5,9 +5,10 @@
 	<parent>
 		<groupId>com.mariocairone.cucumbersome</groupId>
 		<artifactId>parent</artifactId>
-		<version>${revision}</version>
+		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>core</artifactId>
+	<name>Cucumbersome: Core</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -19,7 +20,7 @@
 		<dependency>
 			<groupId>com.mariocairone.cucumbersome</groupId>
 			<artifactId>template</artifactId>
-		</dependency>	
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
