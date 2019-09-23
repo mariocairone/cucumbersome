@@ -46,7 +46,7 @@ Here is the list of available modules:
 <dependency>
   <groupId>com.mariocairone.cucumbersome</groupId>
   <artifactId>[module name]</artifactId>
-  <version>1.0.0.alpha</version>
+  <version>[version]</version>
   <scope>test</scope>
 </dependency>
 
