@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.mariocairone.cucumbersome</groupId>
 	<artifactId>parent</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.1</version>
 	<packaging>pom</packaging>
 	<name>Cucumbersome: Parent</name>
 	<description>A small, lightweight framework to speed up testing using cucumber</description>
@@ -29,7 +29,7 @@
 		<connection>scm:git:https://github.com/mariocairone/cucumbersome.git</connection>
 		<developerConnection>scm:git:https://github.com/mariocairone/cucumbersome.git</developerConnection>
 		<url>https://github.com/mariocairone/cucumbersome/tree/master</url>
-	  <tag>HEAD</tag>
+	  <tag>1.0.1</tag>
   </scm>
 
 
