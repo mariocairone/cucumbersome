@@ -17,6 +17,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 
@@ -358,6 +359,21 @@ public class HttpSteps extends BaseStepDefs {
 
 		final JSONArray jsonArray = JsonPath.compile("$").read(body);
 		AssertionUtils.compareCounts(Optional.ofNullable(comparisonAction).orElse(""), intCount, jsonArray.size());
+
+	}		
+
+	@ParseArgs
+	@Then("^the http response time should be(?: (less than|more than|at least|at most))? (\\d+)(s|ms)$")
+	public void theResponseTimeShouldBe(String comparisonAction, Integer time, String unit)  {
+		TimeUnit timeUnit = TimeUnit.MILLISECONDS;
+		
+		if(unit.equals("s"))
+			timeUnit = TimeUnit.SECONDS;
+		
+
+		Long responseTime = response.timeIn(timeUnit);
+
+		AssertionUtils.compareCounts(Optional.ofNullable(comparisonAction).orElse(""), time, responseTime.intValue());
 
 	}		
 	
