@@ -1,11 +1,12 @@
 package com.mariocairone.cucumbersome.steps.mock;
 
 
-import static com.mariocairone.cucumbersome.steps.mock.MockConfig.mockOptions;
+import static com.mariocairone.cucumbersome.steps.mock.config.MockConfig.mockOptions;
+import com.mariocairone.cucumbersome.steps.mock.container.MockServiceContainer;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
-import org.testcontainers.containers.MockServerContainer;
 
 import com.mariocairone.cucumbersome.steps.http.HttpConfig;
 
@@ -17,11 +18,12 @@ import io.cucumber.junit.CucumberOptions;
 									  "junit:target/cucumber/cucumber.xml"	}, 
     glue = {"com.mariocairone.cucumbersome.steps"},
     features = "classpath:features/mock",
+    tags = "@test",
     strict = true)
 public class CucumbersomeMockTest {
 	
 	
-	private static MockServerContainer mockServer = new MockServerContainer();			
+	private static MockServiceContainer mockServer = new MockServiceContainer();			
 			
 	 @BeforeClass
 	  public static void init() {
@@ -33,10 +35,12 @@ public class CucumbersomeMockTest {
 		 
 		 HttpConfig.httpOptions().withPort(mockServer.getServerPort());
 		 
-
-		
-
 	 }
 	
 
+	 @AfterClass
+	 public static void  after() {
+	//	 System.out.println(mockServer.getLogs());
+	 }
+	 
 }

@@ -1,4 +1,4 @@
-package com.mariocairone.cucumbersome.steps.mock;
+package com.mariocairone.cucumbersome.steps.mock.exceptions;
 
 public class MockStepsException extends RuntimeException{
 
