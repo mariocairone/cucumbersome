@@ -33,6 +33,8 @@ http.nocontent.placeholder=-
 
 ## Steps in this library
 
+Please note that the list below is porvided as exemple and may not include all the steps available in the library.
+
 ###  Configure Http Client
 
 ```gherkin
