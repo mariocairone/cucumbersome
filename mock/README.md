@@ -37,6 +37,7 @@ Per each services we can then specify the properties host and port:
 ```
 mock.services.<name>.port=8081
 mock.services.<name>.host=localhost
+mock.services.<name>.fixedPort=9090
 ```
 
 if host and port are not specified for a service the default will be used:
@@ -45,20 +46,28 @@ if host and port are not specified for a service the default will be used:
 |:--------------|:----------------------|
 | port          | random available port |
 | host          | <serviceName>         |
+| fixedPort     | NONE                  |
 
 
  using default parameters.
 
 ## Steps in this library
 
+Please note that the list below is porvided as exemple and may not include all the steps available in the library.
+
 #### Create a mock definition for the service test
 
 ```gherkin
 Given the mock with path "/" and method "GET" is added to service "test"
 ```
-#### Mock service if request body match
+---
+Note: support regex in path and method
+
+### Request Body Match
+
+#### Mock service if request body match json
 ```gherkin
- And the mock receive request with body
+And the mock receives a request with body matching json
  """
   {
    "test": "test"
@@ -66,24 +75,104 @@ Given the mock with path "/" and method "GET" is added to service "test"
  """
 ```
 
-#### Mock service if request header match
+#### Mock service if request body match json path
 ```gherkin
-Given the mock receive request with header "MyHeader" with value "MyHeaderValue"
+And the mock receives a request with body matching the json path "$..store.book.author"
+
 ```
-#### Mock service if request query param match
+
+#### Mock service if request body contains string
 ```gherkin
-Given the mock receive request with query parameter "queryParam" with value "queryParamValue"
+And the mock receives a request with body containing the string "test"
 ```
+
+#### Mock service if request body is equal to string
+```gherkin
+And the mock receives a request with body equal to string
+  """
+  ExactMatch
+  """
+```
+#### Mock service if request body is equal to string
+```gherkin
+And the mock receives a request with body matching regex "Exact.*"
+```
+
+#### Mock service if request body is equal to xml
+```gherkin
+And the mock receives a request with xml body:
+  """
+  <note>
+    <to>Tove</to>
+    <from>Jani</from>
+    <heading>Reminder</heading>
+    <body>Don't forget me this weekend!</body>
+  </note>    
+  """
+```
+
+#### Mock service if request body match xpath
+```gherkin
+And the mock receives a request with body matching the xpath "/note/to"
+```
+
+### Request Header Match
+
+#### Mock service if request contains header
+```gherkin
+And the mock receives a request with header "MyHeader" 
+```
+
+#### Mock service if request contains header with value
+```gherkin
+Given the mock receives request with header "MyHeader" with value "MyHeaderValue"
+```
+
+#### Mock service if request contains headers with value
+```gherkin
+Given the http request headers are:
+  | myHeader  | myValue  |  
+  | myHeader2 | myValue2 |   
+```
+
+---
+Note: support regex in name and value
+
+#### Mock service if request query param matches
+```gherkin
+Given the mock receives request with query parameter "queryParam" with value "queryParamValue"
+```
+
+#### Mock service if request query params match
+```gherkin
+And the mock receives a request with query parameters:
+  | query  | myQuery |
+  | query2 | myQuery2|
+```
+---
+Note: support regex in name and value
+
+### Mock response
 
 #### Add status code to the mock response
 ```gherkin
 And the mock responds with status code 200
+```
+#### Add status code and limit number of mock responses
+```gherkin
 And the mock responds with status code "200" exactly 3 times
 ```
+
 #### Add header to the mock response for the service test
 ```gherkin
 And the mock response will have header "Content-Type" with value "application/json"
 ```
+
+#### Add delay mock response 
+```gherkin
+And the mock response will have a delay of 5s
+```
+
 
 ## Installation
 
@@ -106,7 +195,8 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
-import static com.mariocairone.cucumbersome.steps.mock.MockConfig.mockOptions;
+import static com.mariocairone.cucumbersome.steps.mock.config.MockConfig.mockOptions;
+import com.mariocairone.cucumbersome.steps.mock.container.MockServerContainer;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(plugin = { "pretty", "html:target/cucumber",
@@ -129,4 +219,5 @@ public class CucumbersomeMockIT  {
 ```
 
 ---
-Note: be sure to modify the features attribute to match your requirement
+Note: The library include a `MockServiceContainer` class that can be used instead of the official `MockServiceContainer`. The implementation provided extend the official libriry adding the ability to use a fixed exposed port on the host machine to simplify local debug. 
+Also please be sure to modify the features attribute to match your project requirement

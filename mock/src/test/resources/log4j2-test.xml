@@ -17,7 +17,7 @@
     </Root>
     
    	<Logger name="com.addisonlee.cucumber" level="DEBUG"/>
-   	<Logger name="org.mockserver.mock" level="WARN"/>
+   	<Logger name="org.mockserver.mock" level="DEBUG"/>
    	
     <Logger name="org.testcontainers" level="DEBUG"/>
     

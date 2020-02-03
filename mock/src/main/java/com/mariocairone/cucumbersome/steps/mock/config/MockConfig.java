@@ -1,18 +1,16 @@
-package com.mariocairone.cucumbersome.steps.mock;
+package com.mariocairone.cucumbersome.steps.mock.config;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.mockserver.client.MockServerClient;
-import org.testcontainers.containers.MockServerContainer;
+import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 
 import com.mariocairone.cucumbersome.config.AbstractModuleConfig;
+import com.mariocairone.cucumbersome.steps.mock.container.MockServiceContainer;
 
 public class MockConfig extends AbstractModuleConfig {
 
@@ -21,10 +19,9 @@ public class MockConfig extends AbstractModuleConfig {
 	protected final static String MOCK_SERVICES_PREFIX = "mock.services";
 	protected final static String MOCK_SERVICE_HOST_SUFFIX = ".host";
 	protected final static String MOCK_SERVICE_PORT_SUFFIX = ".port";
+	protected final static String MOCK_SERVICE_FIXEDPORT_SUFFIX = ".fixedPort";
 	
-
-	private  Map<String, MockServerContainer> containers;	
-	private  Map<String, MockServerClient> services;
+	private Map<String,Service> services;
 		
 	private MockConfig() {
 		super();
@@ -33,36 +30,38 @@ public class MockConfig extends AbstractModuleConfig {
 	public static MockConfig mockOptions() {
 		return instance;
 	}
-	
-	protected Map<String, MockServerContainer> getContainers() {
-		return containers;
-	}
 
-	protected Map<String, MockServerClient> getServices() {
+	public Map<String, Service> getServices() {
 		return services;
 	}
 
 	@Override
 	protected void loadProperties(){
-		if(containers == null)
-			containers = new ConcurrentHashMap<>();
+
 		if(services == null)
 			services = new ConcurrentHashMap<>();
 				
-		List<String> serviceNames = null;
+		List<String> serviceNames = new ArrayList<>();
 
 		if (getSettings().isDefined(MOCK_SERVICES_PREFIX)) {
 			String servicesProperty = getSettings().get(MOCK_SERVICES_PREFIX, String.class);
 			serviceNames = Arrays.asList(servicesProperty.split(","));
-		} else {
-			serviceNames = new ArrayList<>();
-			serviceNames.add("default");
-		}
+		} 
 
 		for (String serviceName : serviceNames) {
 			String host = serviceName;
 			Integer port = null;
-			MockServerContainer container = new MockServerContainer();
+			MockServiceContainer container = null;
+
+			String fixedPortKey = String.format("%s.%s%s",
+					MOCK_SERVICES_PREFIX,serviceName,MOCK_SERVICE_FIXEDPORT_SUFFIX);			
+			
+			if (getSettings().isDefined(fixedPortKey)) {
+				Integer fixedPort = getSettings().get(fixedPortKey, Integer.class);
+				container = new MockServiceContainer(fixedPort);
+			} else {
+				container = new MockServiceContainer();
+			}
 			
 			String hostKey = String.format("%s.%s%s",
 					MOCK_SERVICES_PREFIX,serviceName,MOCK_SERVICE_HOST_SUFFIX);
@@ -70,7 +69,7 @@ public class MockConfig extends AbstractModuleConfig {
 			if (getSettings().isDefined(hostKey)) {
 				host = getSettings().get(hostKey, String.class);
 				container.withNetworkAliases(host);
-			}
+			} 
 				
 			String portKey = String.format("%s.%s%s",
 						MOCK_SERVICES_PREFIX,serviceName,MOCK_SERVICE_PORT_SUFFIX);
@@ -88,36 +87,26 @@ public class MockConfig extends AbstractModuleConfig {
 		}		
 	}
 	
-
-	public Integer getServicePort(String serviceName, Integer originalPort) {
-		 MockServerContainer  container = containers.get(serviceName);
-				if(container == null)
-					return null;
-		
-		return container.getMappedPort(originalPort);
-				
-	}	
 	
-	public MockConfig addService(String serviceName,MockServerContainer container) {			
+	public MockConfig addService(String serviceName,GenericContainer<?> container) {			
 		
-		containers.put(serviceName, container);		
-		String host = "localhost" ;	
-		Integer port = 1080;
-		try {
-			URL url = new URL(container.getEndpoint());
-			host = url.getHost();	
-			port = url.getPort();
-		} catch (MalformedURLException e) {}
+		String host = container.getContainerIpAddress();	
+		Integer port = container.getFirstMappedPort();
 		
-		MockServerClient client = new MockServerClient(host, port);
-		services.put(serviceName, client);
+		Service service = new Service(host, port);
+		services.put(serviceName, service);
 		return mockOptions();
 	}
-	
+
+	public MockConfig addService(String serviceName,String host, Integer port) {			
+		
+		Service service = new Service(host, port);
+		services.put(serviceName, service);
+		return mockOptions();
+	}
 
 	public void clearServices() {
 		services.clear();
-		containers.clear();
 	}
 }
 	

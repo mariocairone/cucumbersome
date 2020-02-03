@@ -2,7 +2,16 @@ package com.mariocairone.cucumbersome.steps.mock;
 
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
-
+import static org.mockserver.model.Not.*;
+import static org.mockserver.model.JsonBody.json;
+import static org.mockserver.model.JsonPathBody.jsonPath;
+import static org.mockserver.model.XPathBody.xpath;
+import static org.mockserver.model.XmlBody.xml;
+import static org.mockserver.model.RegexBody.regex;
+import static org.mockserver.model.StringBody.subString;
+import static org.mockserver.model.Header.*;
+import static org.mockserver.model.NottableString.*;
+import static org.mockserver.model.Parameter.param;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -14,6 +23,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.mockserver.client.MockServerClient;
+import org.mockserver.matchers.MatchType;
 import org.mockserver.matchers.Times;
 import org.mockserver.mock.Expectation;
 import org.mockserver.model.Body;
@@ -24,6 +34,9 @@ import org.mockserver.model.Parameter;
 import org.mockserver.model.StringBody;
 
 import com.mariocairone.cucumbersome.steps.BaseStepDefs;
+import com.mariocairone.cucumbersome.steps.mock.config.MockConfig;
+import com.mariocairone.cucumbersome.steps.mock.config.Service;
+import com.mariocairone.cucumbersome.steps.mock.exceptions.MockStepsException;
 import com.mariocairone.cucumbersome.template.aspect.ParseArgs;
 import com.mariocairone.cucumbersome.template.parser.TemplateParser;
 
@@ -41,14 +54,14 @@ public class MockSteps extends BaseStepDefs {
 	private HttpRequest request;
 	private HttpResponse response;
 
-	private Map<String, MockServerClient> clients;
+	private Map<String, Service> services;
 
 	
 	public MockSteps(TemplateParser parser) {
 		super(parser);	
 		
 		 MockConfig config = MockConfig.mockOptions();
-		 this.clients = new HashMap<String, MockServerClient>(config.getServices());
+		 this.services = new HashMap<String, Service>(config.getServices());
 		 
 	}
 
@@ -59,11 +72,11 @@ public class MockSteps extends BaseStepDefs {
 	
 	public MockServerClient getMockServerClient(String serviceName) {
 		
-		return clients.computeIfAbsent(serviceName, key -> {
-			String availableMockServices = clients.keySet().stream().collect(Collectors.joining(", "));
+		return services.computeIfAbsent(serviceName, key -> {
+			String availableMockServices = services.keySet().stream().collect(Collectors.joining(", "));
 			throw new MockStepsException("Unable to find http mock service by name:" + key + ". "
 					+ "Available mock services are: {" + availableMockServices + "}");
-		});
+		}).getClient();
 	}	
 
 
@@ -100,8 +113,8 @@ public class MockSteps extends BaseStepDefs {
 	
 	@Before
 	public void before() {
-		clients.forEach( (name,client) -> {
-			client.reset();
+		services.forEach( (name,client) -> {
+			client.getClient().reset();
 		});
 	}
 	
@@ -113,26 +126,37 @@ public class MockSteps extends BaseStepDefs {
 		request = request(path).withMethod(httpMethod);
 		response = response();
 
-		client.when(request).respond(response);		
+			
 	}
 
 
 	@ParseArgs		
-	@Given("^the mock receive request with header \"([^\"]*)\" with value \"([^\"]*)\"$")
+	@Given("^the mock receives a request with header \"([^\"]*)\" with value \"([^\"]*)\"$")
 	public void theMockReceiveARequestWithHeatherWithValue(String headerName, String headerValue) {
-
 		request.withHeader(headerName, headerValue);
 	}
 
 	@ParseArgs		
-	@Given("^the mock receive request with query parameter \"([^\"]*)\" with value \"([^\"]*)\"$")
+	@Given("^the mock receives a request with header \"([^\"]*)\"$")
+	public void theMockReceiveARequestWithHeather(String headerName) {
+		request.withHeaders(header(headerName));
+	}
+	
+	@ParseArgs		
+	@Given("^the mock receives a request without header \"([^\"]*)\"$")
+	public void theMockReceiveARequestWithoutHeather(String headerName) {
+		request.withHeaders(header(not(headerName)));
+	}	
+	
+	@ParseArgs		
+	@Given("^the mock receives a request with query parameter \"([^\"]*)\" with value \"([^\"]*)\"$")
 	public void theMockReceiveARequestWithQueryParameterWithValue(String queryParameterName, String queryParameterValue) {
 
-		request.withQueryStringParameter(queryParameterName, queryParameterValue);
+		request.withQueryStringParameter(param(queryParameterName, queryParameterValue));
 	}	
 	
 	@ParseArgs	
-	@Given("^the mock receive request with query parameters(?:[:])?$")
+	@Given("^the mock receives a request with query parameters(?:[:])?$")
 	public void theMockReceiveARequestWithQueryParameters(Map<String, String> params) {
 		 List<Parameter> parameters = params.entrySet().stream()
 		 	.map( entry -> new Parameter(entry.getKey(),entry.getValue()))
@@ -143,11 +167,58 @@ public class MockSteps extends BaseStepDefs {
 	}	
 	
 	@ParseArgs		
-	@Given("^the mock receive request with body( from YAML|)(?:[:])?$")
-	public void theMockReceiveARequestWithBody(String format, String body) {
+	@Given("^the mock receives a request with body equal to string(?:[:])?$")
+	public void theMockReceiveARequestWithBody(String body) {
 		this.setRequestBody(new StringBody(body));		
 	}	
-
+	
+	@ParseArgs		
+	@Given("^the mock receives a request with body containing the string \"(.*)\"$")
+	public void theMockReceiveARequestWithBodyContainingString(String subString) {
+		this.setRequestBody(subString(subString));		
+	}	
+	@ParseArgs		
+	@Given("^the mock receives a request with body matching json(?:[:])?$")
+	public void theMockReceiveARequestWithJsonBody(String body) {
+		this.setRequestBody(json(body,MatchType.ONLY_MATCHING_FIELDS));
+	}		
+	
+	@ParseArgs		
+	@Given("^the mock receives a request with body matching the json path \"(.*)\"$")
+	public void theMockReceiveARequestWithJsonPathBody(String jsonPath) {
+		this.setRequestBody( jsonPath(jsonPath));
+	}		
+	
+	@ParseArgs		
+	@Given("^the mock receives a request with body not matching the json path \"(.*)\"$")
+	public void theMockReceiveARequestWithoutJsonPathBody(String jsonPath) {
+		this.setRequestBody(not(jsonPath(jsonPath)));
+	}		
+	
+	@ParseArgs		
+	@Given("^the mock receives a request with xml body(?:[:])?$")
+	public void theMockReceiveARequestWithXmlBody(String body) {
+		this.setRequestBody(xml(body));
+	}		
+	
+	@ParseArgs		
+	@Given("^the mock receives a request with body matching the xpath \"(.*)\"$")
+	public void theMockReceiveARequestWithXPathBody(String xPath) {
+		this.setRequestBody(xpath(xPath));
+	}		
+	
+	@ParseArgs		
+	@Given("^the mock receives a request with body not matching the xpath \"(.*)\"$")
+	public void theMockReceiveARequestWithoutXPathBody(String format, String xPath) {
+		this.setRequestBody(not(xpath(xPath)));
+	}		
+	
+	@ParseArgs		
+	@Given("^the mock receives a request with body matching regex \"(.*)\"$")
+	public void theMockReceiveARequestWithregexBody(String regex) {
+		this.setRequestBody(regex(regex));
+	}	
+	
 	
 	@ParseArgs
 	@Given("^the mock response will have header \"([^\"]*)\" with value \"([^\"]*)\"$")
@@ -183,7 +254,6 @@ public class MockSteps extends BaseStepDefs {
 		
 	}	
 
-	
 	@ParseArgs
 	@Given("^the mock responds with status code (\\d+)$")
 	public void theMockResponseWillHaveStatusCode(Integer httpRespondStatusCode) {		
