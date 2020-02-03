@@ -54,9 +54,10 @@ public class Settings {
 
 			input = this.getClass().getClassLoader().getResourceAsStream(fileName);
 			if (input == null) {
-				logger.info("File not found: %s",fileName);
+				logger.info("No properties file found: " + fileName + ", Continue with default settings.");
 			} else {
 				// load a properties file from class path, inside static method
+				logger.info("Loading properties from file " + fileName);
 				prop.load(input);				
 			}
 
